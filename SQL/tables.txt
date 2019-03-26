@@ -1,0 +1,221 @@
+create database macproven;
+
+use macproven;
+
+CREATE TABLE ARTISTS(
+    id_artist int auto_increment,
+    name varchar(50) not null,
+    isActive BOOLEAN DEFAULT 1,
+    primary key (id_artist)
+);
+
+CREATE TABLE CATEGORIES(
+    id_category int auto_increment,
+    category varchar(50) not null,
+    isActive BOOLEAN DEFAULT 1,
+    primary key (id_category)
+);
+
+
+CREATE TABLE EVENTS(
+    ID_EVENT INT AUTO_INCREMENT,
+    FK_CATEGORY INT,
+    imagePath varchar(100),
+    TITLE VARCHAR (50),
+    isActive BOOLEAN DEFAULT 1,
+    PRIMARY KEY (ID_EVENT),
+    FOREIGN KEY (FK_CATEGORY) REFERENCES CATEGORIES (ID_CATEGORY)
+);
+
+
+create table eventPlaces(
+  quantity INT NOT NULL,
+  isActive BOOLEAN DEFAULT 1,
+  id_eventPlace INT NOT NULL AUTO_INCREMENT,
+  name varchar(50) not null,
+  PRIMARY KEY (id_eventPlace)
+  );
+
+  create table placetype(
+      description varchar (50) NOT NULL,
+      isActive BOOLEAN DEFAULT 1,
+      id_placetype int auto_increment,
+      primary key (id_placetype)
+  );
+
+ CREATE TABLE calendars(
+     id_calendar int auto_increment,
+     dateevent date,
+     fk_id_event int not null,
+     isActive BOOLEAN DEFAULT 1,
+     imagePath varchar(100),
+     fk_id_eventplace int not null,
+     primary key (id_calendar),
+     foreign key (fk_id_event) references events (id_event),
+     foreign key (fk_id_eventplace) references eventplaces (id_eventplace)
+ );
+
+ CREATE TABLE eventseats(
+     id_eventseat int auto_increment,
+     price int not null,
+     quantity int not null,
+     fk_id_calendar int not null,
+     isActive BOOLEAN DEFAULT 1,
+     fk_id_placetype int not null,
+     primary key (id_eventseat),
+     foreign key (fk_id_calendar) references calendars (id_calendar),
+     foreign key (fk_id_placetype) references placetype (id_placetype)
+ );
+
+
+create table artistsXCalendars(
+    pfk_id_calendar int not null,
+    pfk_id_artist int not null,
+    primary key (pfk_id_artist, pfk_id_calendar),
+    foreign key (pfk_id_calendar) references calendars (id_calendar),
+    foreign key (pfk_id_artist) references artists (id_artist)    
+);
+
+CREATE TABLE USERS
+( id_user int auto_increment,
+  email varchar(50) not null,
+  password varchar(50) not null,
+  nickName varchar(50) not null,
+  isActive BOOLEAN DEFAULT 1,
+  isAdmin BOOLEAN,
+  PRIMARY KEY (id_user)
+);
+
+CREATE TABLE PURCHASES
+( id_purchase int auto_increment,
+fk_id_user int not null,
+datePurchase datetime,
+PRIMARY KEY(id_purchase),
+FOREIGN KEY(fk_id_user) REFERENCES USERS(id_user)
+);
+
+
+CREATE TABLE purchaseLines (
+id_purchaseLine int AUTO_INCREMENT,
+fk_id_purchase int not null,
+fk_id_eventseat int not null,
+quantity int not null,
+price int not null,
+PRIMARY KEY(id_purchaseLine),
+FOREIGN KEY(fk_id_purchase) REFERENCES PURCHASES(id_purchase),
+FOREIGN KEY(fk_id_eventseat) REFERENCES eventseats(id_eventseat)
+);
+
+CREATE TABLE TICKETS (
+id_ticket int AUTO_INCREMENT,
+qr varchar(23),
+fk_id_purchaseLine int not null,
+PRIMARY KEY(id_ticket),
+FOREIGN KEY(fk_id_purchaseLine) REFERENCES purchaseLines(id_purchaseLine)
+);
+
+-- INSERTS
+
+INSERT INTO ARTISTS (name) VALUES 
+("Rolling Stones"),
+("Shakira"),
+("Las Pastillas Del Abuelo"),
+("Ulises Bueno"),
+("Peter Lanzani"),
+("Rafael Ferro"),
+("Maluma"),
+("Kendrick Lamar"),
+("Artick Monkeys"),
+("Lenny Kravitz"),
+("Post Malone"),
+("Sam Smith"),
+("David Guetta"),
+("Kalvin Harris"),
+("Martin Garrix"),
+("Sid Inc"),
+("La Vela Puerca");
+
+INSERT INTO CATEGORIES (CATEGORY) VALUES
+("Recital"),
+("Boxeo"),
+("Festival de musica"),
+("Comedia Musical"),
+("Teatro");
+
+INSERT INTO EVENTS (FK_CATEGORY,TITLE,imagePath) VALUES
+(1,"Shakira en Argentina","shakira.jpg"),
+(1,"La vela puerca Gira BSAS","laVela.jpg"),
+(1,"Rolling Stones","RollingStones.jpg"),
+(3,"Tomorrowland Rio 2018","tomorrowland.jpg"),
+(1,"Las pastillas del Abuelo","lpda.jpg"),
+(3,"Lollapalooza","lollapalooza.jpg"),
+(5,"Equus","equus.jpg"),
+(1,"Shakira Y Maluma","malumashakira.jpg"),
+(1,"Ulises Bueno","ulises.jpg");
+
+INSERT INTO EVENTPLACES (QUANTITY,NAME) VALUES
+(65000,"Monumental"),
+(52000,"Velez Sarfield"),
+(9000,"Luna Park"),
+(3200,"Gran Rex"),
+(11000,"Polideportivo Islas Malvinas"),
+(80000,"Estadio Maracaná"),
+(600,"Abbey Road");
+
+INSERT INTO PLACETYPE (DESCRIPTION) VALUES
+("General"),
+("Platea"),
+("Palco"),
+("VIP"),
+("Campo");
+
+INSERT INTO USERS(email,password,nickName,isAdmin) VALUES
+ ("admin@gmail.com","12345","admin","1"),
+ ("client@gmail.com","12345","client","0");
+
+ INSERT INTO calendars(dateevent, fk_id_event, imagePath, fk_id_eventplace) VALUES
+ ('2019-01-01', 3, 'RollingStones.jpg', 1),
+ ('2019-01-18', 1, 'shakira.jpg', 3),
+ ('2019-01-25', 5, 'lpda.jpg', 7),
+ ('2019-02-10', 2, 'laVela.jpg', 4),
+ ('2019-01-18', 9, 'ulises.jpg', 2),
+ ('2019-01-23', 7, 'equus.jpg', 3),
+ ('2019-01-10', 8, 'malumashakira.jpg', 2),
+ ('2019-02-02', 6, 'lollapalooza.jpg', 5),
+ ('2019-02-03', 6, 'lollapalooza.jpg', 5),
+ ('2019-02-04', 6, 'lollapalooza.jpg', 5),
+ ('2018-11-13', 4, 'tomorrowland.jpg', 1);
+
+ INSERT INTO artistsXCalendars(pfk_id_calendar, pfk_id_artist) VALUES 
+ (1, 1),
+ (2, 2),
+ (3, 3),
+ (4, 17),
+ (5, 4),
+ (6, 5),
+ (6, 6),
+ (7, 2),
+ (7, 7),
+ (8, 12),
+ (8, 8),
+ (9, 9),
+ (9, 11),
+ (10, 10),
+ (11, 13),
+ (11, 14),
+ (11, 15),
+ (11, 16);
+
+INSERT INTO eventseats (price, quantity, fk_id_calendar, fk_id_placetype) VALUES
+(500, 10000, 1, 2),
+(1000, 5000, 1, 3),
+(2000, 2500, 1, 4),
+(750, 40000, 1, 5),
+(700, 5000, 2, 2),
+(1400, 1500, 2, 3),
+(700, 500, 3, 1),
+(150, 2000, 4, 1),
+(600, 3000, 8, 5),
+(1500, 100, 8, 4),
+(600, 3000, 9, 5),
+(1500, 100, 9, 4);
