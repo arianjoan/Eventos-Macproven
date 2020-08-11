@@ -21,7 +21,7 @@
                     <img class="d-block w-100 SecondImg">
                     <div class="carousel-caption d-none d-md-block">
                         <h5>Lollapalooza</h5>
-                        <p>2-3-4 de febrero - Estadio polideportivo Islas Malvinas</p>
+                        <p>2-3-4 de febrero - polideportivo Islas Malvinas</p>
                     </div>
                 </div>
                 <div class="carousel-item">
